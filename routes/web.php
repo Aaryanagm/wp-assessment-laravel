@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 use App\Http\Controllers\Web\AuthWebController;
+use App\Http\Controllers\Api\ShopController;
 
 Route::get('/login', [AuthWebController::class, 'showLogin']);
 Route::post('/login', [AuthWebController::class, 'login']);
@@ -24,3 +25,6 @@ Route::get('/dashboard', function () {
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/shop', [ShopController::class, 'index']);
+Route::get('/shop/{id}', [ShopController::class, 'show']);

@@ -154,9 +154,9 @@ class ProductService
     {
         $product = WpPost::where('post_type', 'product')
             ->where('post_status', 'publish')
-            ->where(function ($q) use ($identifier) {
-                $q->where('ID', $identifier)
-                ->orWhere('post_name', $identifier);
+            ->where(function ($q) use ($id) {
+                $q->where('ID', $id)
+                ->orWhere('post_name', $id);
             })
             ->first();
 

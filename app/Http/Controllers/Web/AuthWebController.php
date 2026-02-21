@@ -22,27 +22,36 @@ class AuthWebController extends Controller
             'password' => 'required'
         ]);
 
-        // WordPress users table uses user_email
         $user = User::where('user_email', $request->email)->first();
 
         if (!$user) {
             return back()->withErrors(['Invalid credentials']);
         }
 
-        // user_pass must be bcrypt (as we migrated earlier)
         if (!Hash::check($request->password, $user->user_pass)) {
             return back()->withErrors(['Invalid credentials']);
         }
 
-        // Generate JWT with role claim
+
+        $roleMeta = \DB::table('wp_usermeta')
+            ->where('user_id', $user->ID)
+            ->where('meta_key', 'wp_capabilities')
+            ->first();
+
+        $role = 'guest';
+
+        if ($roleMeta) {
+            $capabilities = unserialize($roleMeta->meta_value);
+            $role = array_key_first($capabilities);
+        }
+
         $token = JWTAuth::claims([
-            'role' => $user->role
+            'role' => $role
         ])->fromUser($user);
 
-        // Store in session for Blade usage
         session([
             'jwt_token' => $token,
-            'user_role' => $user->role
+            'user_role' => $role
         ]);
 
         return redirect('/dashboard');

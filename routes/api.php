@@ -23,6 +23,4 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
 });
 
-Route::get('/shop', [ShopController::class, 'index']);
-Route::get('/shop/{id}', [ShopController::class, 'show']);
 Route::middleware('auth:api')->get('/orders', [OrderController::class, 'index']);
